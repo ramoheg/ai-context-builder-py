@@ -12,4 +12,12 @@ def is_ignored(file: Path, root: Path) -> bool:
     for part in relative_path.parent.parts:
         if part in IGNORED_DIRS:
             return True
+    return is_binary(file)
+
+def is_binary(file: Path) -> bool:
+    try:
+        file.read_text(encoding="utf-8")
+    except (UnicodeDecodeError, OSError):
+        return True
+
     return False
