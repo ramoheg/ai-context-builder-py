@@ -11,29 +11,34 @@ IGNORED_DIRS: set[str] = {
     ".venv",
     "__pycache__",
     ".idea",
-    ".vs"
+    ".vs",
 }
 
+
 def is_ignored(file: Path, root: Path) -> bool:
-    relative_path: Path = file.relative_to(root)
+    return (
+        is_ignored_file(file)
+        or is_in_ignored_dir(file, root)
+        or is_too_large(file)
+        or is_binary(file)
+    )
 
-    if relative_path.name in IGNORED_FILES:
-        return True
 
-    for part in relative_path.parent.parts:
+def is_ignored_file(file: Path) -> bool:
+    return file.name in IGNORED_FILES
+
+
+def is_in_ignored_dir(file: Path, root: Path) -> bool:
+    for part in file.relative_to(root).parent.parts:
         if part in IGNORED_DIRS:
             return True
-
-    if is_too_large(file):
-        return True
-    
-    return is_binary(file)
+    return False
 
 
 def is_binary(file: Path) -> bool:
     try:
         file.read_text(encoding="utf-8")
-    except (UnicodeDecodeError, OSError):
+    except UnicodeDecodeError, OSError:
         return True
 
     return False
