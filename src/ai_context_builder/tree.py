@@ -13,13 +13,19 @@ def build_tree(files: list[Path], root: Path) -> Tree:
     return tree
 
 
-def render_tree(tree: Tree, indent: str = "") -> list[str]:
+def render_tree(tree: Tree, prefix: str = "") -> list[str]:
     lines: list[str] = []
-    for name, subtree in tree.items():
+    entries = list(tree.items())
+
+    for index, (name, subtree) in enumerate(entries):
+        is_last: bool = index == len(entries) - 1
+        connector: str = "└── " if is_last else "├── "
+
         if subtree:
-            lines.append(f"{indent}{name}/")
-            lines.extend(render_tree(subtree, indent + "    "))
+            lines.append(f"{prefix}{connector}{name}/")
+            extension: str = "    " if is_last else "|   "
+            lines.extend(render_tree(subtree, prefix + extension))
         else:
-            lines.append(f"{indent}{name}")
+            lines.append(f"{prefix}{connector}{name}")
 
     return lines
