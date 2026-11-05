@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# AI-Context-Builder generated files
+context.md
