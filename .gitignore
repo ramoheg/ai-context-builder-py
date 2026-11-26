@@ -11,3 +11,6 @@ wheels/
 
 # AI-Context-Builder generated files
 context.md
+
+# API Keys
+.env
